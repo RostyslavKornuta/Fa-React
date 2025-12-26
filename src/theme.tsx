@@ -74,5 +74,31 @@ export const theme = createTheme({
         },
       },
     },
+    MuiSelect: {
+      styleOverrides: {
+        root: {
+          // padding: "8px 10px",
+        },
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          borderRadius: "8px",
+        },
+        // input: {
+        //   padding: "0px",
+        // },
+      },
+    },
+    MuiInputBase: {
+      styleOverrides: {
+        input: {
+          fontSize: "14px",
+          lineHeight: "20px",
+          letterSpacing: "0px",
+        },
+      },
+    },
   },
 });

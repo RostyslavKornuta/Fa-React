@@ -14,13 +14,17 @@ export const domainsApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Domains"],
+  tagTypes: ["Domains", "Domain"],
   endpoints: (build) => ({
     getDomains: build.query<Domain[], void>({
       query: () => "domains?sort=id",
       providesTags: ["Domains"],
     }),
+    getDomainById: build.query<Domain, string>({
+      query: (domainId: string) => `domains/${domainId}`,
+      providesTags: ["Domain"],
+    }),
   }),
 });
 
-export const { useGetDomainsQuery } = domainsApi;
+export const { useGetDomainsQuery, useGetDomainByIdQuery } = domainsApi;

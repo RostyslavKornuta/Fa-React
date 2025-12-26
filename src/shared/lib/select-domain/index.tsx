@@ -1,10 +1,9 @@
 import { Box, Typography } from "@mui/material";
 import type { Domain } from "../../models/domain";
 import { useState } from "react";
-import { useAppSelector } from "../../../hooks/hooks";
-import { useDispatch } from "react-redux";
-import { setSelectedDomain } from "../../api/domains/domainsSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useGetDomainByIdQuery } from "../../api/domains/domainsApi";
+import { skipToken } from "@reduxjs/toolkit/query";
 
 interface SelectDomainProps {
   domains: Domain[];
@@ -12,14 +11,16 @@ interface SelectDomainProps {
 
 export const SelectDomain = ({ domains }: SelectDomainProps) => {
   const [isOpened, setIsOpened] = useState<boolean>(false);
-  const dispatch = useDispatch();
+  const { domainId } = useParams<{ domainId: string }>();
+  const { data: selectedDomain } = useGetDomainByIdQuery(domainId ?? skipToken);
   const navigate = useNavigate();
-  const selectedDomain = useAppSelector(
-    (state) => state.domains.selectedDomain
-  );
 
   const onSelectedDomainChange = (domain: Domain) => {
-    dispatch(setSelectedDomain(domain));
+    if (domain.id === domainId) {
+      setIsOpened(false);
+      return;
+    }
+
     navigate(`/content/${domain.id}`, { replace: true });
     setIsOpened(false);
   };
