@@ -16,7 +16,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import AddIcon from "@mui/icons-material/Add";
 
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import { skipToken } from "@reduxjs/toolkit/query";
 
@@ -37,14 +37,15 @@ import { useDebounce } from "../../hooks/useDebounce";
 import { useGetContentQuery } from "../../shared/api/content/contentApi";
 import { useGetAuthorsQuery } from "../../shared/api/authors/authorsApi";
 import { useGetCategoriesQuery } from "../../shared/api/categories/categoriesApi";
-import { useGetDomainByIdQuery } from "../../shared/api/domains/domainsApi";
 import { defaultContentSize } from "../../shared/api/constants";
+import { getSelectedDomain } from "../../shared/lib/select-domain";
 
 export const Content = () => {
   const navigate = useNavigate();
-  const { domainId } = useParams<{ domainId: string }>();
 
-  const shouldSkip = !domainId;
+  const selectedDomain = getSelectedDomain();
+
+  const shouldSkip = !selectedDomain;
 
   const searchRequest = useAppSelector(
     (state) => state.searchRequest.searchRequest
@@ -57,14 +58,12 @@ export const Content = () => {
 
   const [content, setContent] = useState<ContentArticle[]>([]);
 
-  const { data: selectedDomain } = useGetDomainByIdQuery(domainId ?? skipToken);
-
   const { data: authors } = useGetAuthorsQuery(
-    shouldSkip ? skipToken : { ...searchRequest, domainId }
+    shouldSkip ? skipToken : { ...searchRequest, domainId: selectedDomain.id }
   );
 
   const { data: categories } = useGetCategoriesQuery(
-    shouldSkip ? skipToken : { ...searchRequest, domainId }
+    shouldSkip ? skipToken : { ...searchRequest, domainId: selectedDomain.id }
   );
 
   const { data: articles, isFetching: isContentFetching } = useGetContentQuery(
@@ -72,7 +71,7 @@ export const Content = () => {
       ? skipToken
       : {
           ...searchRequest,
-          domainId,
+          domainId: selectedDomain.id,
           searchQuery: debouncedSearchQuery,
           order: "modifiedAt",
           sort: ["modifiedAt", "desc"],
@@ -82,7 +81,9 @@ export const Content = () => {
   );
 
   useEffect(() => {
-    setContent(articles ?? []);
+    if (articles) {
+      setContent(articles);
+    }
   }, [articles]);
 
   const getAuthorById = (authorId: string) =>
@@ -112,7 +113,7 @@ export const Content = () => {
     articleToChange: ContentArticle
   ) => {
     setContent((prev) =>
-      prev.map((article) =>
+      prev!.map((article) =>
         article.id === articleToChange.id
           ? { ...article, category: event.target.value }
           : article
@@ -134,8 +135,9 @@ export const Content = () => {
           <Box sx={{ display: "flex", alignItems: "center", gap: "6px" }}>
             <Box
               sx={{
-                width: 40,
-                height: 40,
+                width: "40px",
+                height: "40px",
+                flexShrink: "0",
                 border: "1px solid #CBCEDA",
                 borderRadius: "8px",
                 backgroundColor: "#E7E8EC",

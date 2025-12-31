@@ -12,7 +12,7 @@ const initialState: SearchRequestState = {
     page: 0,
     searchQuery: "",
     size: 0,
-    sort: "",
+    sort: [""],
   },
 };
 

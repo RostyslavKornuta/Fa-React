@@ -40,19 +40,12 @@ export const theme = createTheme({
         root: {
           display: "flex",
           alignItems: "center",
-          "&:hover": {
-            backgroundColor: "#eef6f2 !important",
-          },
-          "&:nth-of-type(even)": {
-            backgroundColor: "#F8F9FA",
-          },
           "&:first-of-type": {
             backgroundColor: "transparent",
           },
         },
       },
     },
-
     MuiButton: {
       styleOverrides: {
         root: {

@@ -39,7 +39,13 @@ export const CustomTable = <D,>({ data, columns }: CustomTableProps<D>) => {
             </TableHead>
             <TableBody>
               {data.map((row: D, index: number) => (
-                <TableRow key={index}>
+                <TableRow
+                  key={index}
+                  sx={{
+                    "&:hover": { backgroundColor: "#eef6f2 !important" },
+                    "&:nth-of-type(even)": { backgroundColor: "#F8F9FA" },
+                  }}
+                >
                   {columns.map((column: CustomTableColumn<D>) => (
                     <TableCell key={column.key} sx={column.styles}>
                       {column.render ? column.render(row) : row[column.key]}

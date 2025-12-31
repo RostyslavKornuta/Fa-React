@@ -1,9 +1,16 @@
 import { Box, Typography } from "@mui/material";
 import type { Domain } from "../../models/domain";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useGetDomainByIdQuery } from "../../api/domains/domainsApi";
-import { skipToken } from "@reduxjs/toolkit/query";
+
+export const setSelectedDomain = (domain: Domain, key?: string) => {
+  localStorage.setItem(key || "selectedDomain", JSON.stringify(domain));
+};
+
+export const getSelectedDomain = (key?: string): Domain | null => {
+  const domain = localStorage.getItem(key || "selectedDomain");
+  return domain ? JSON.parse(domain) : null;
+};
 
 interface SelectDomainProps {
   domains: Domain[];
@@ -11,22 +18,40 @@ interface SelectDomainProps {
 
 export const SelectDomain = ({ domains }: SelectDomainProps) => {
   const [isOpened, setIsOpened] = useState<boolean>(false);
-  const { domainId } = useParams<{ domainId: string }>();
-  const { data: selectedDomain } = useGetDomainByIdQuery(domainId ?? skipToken);
+  const ref = useRef<HTMLDivElement | null>(null);
+  const selectedDomain = getSelectedDomain();
   const navigate = useNavigate();
 
   const onSelectedDomainChange = (domain: Domain) => {
-    if (domain.id === domainId) {
+    if (domain.id === selectedDomain?.id) {
       setIsOpened(false);
       return;
     }
 
-    navigate(`/content/${domain.id}`, { replace: true });
+    navigate(`/content/${domain.id}`);
+    setSelectedDomain(domain);
     setIsOpened(false);
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        setIsOpened(false);
+      }
+    };
+
+    if (isOpened) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpened]);
+
   return (
     <Box
+      ref={ref}
       sx={{
         position: "relative",
       }}

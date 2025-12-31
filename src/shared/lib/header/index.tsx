@@ -1,7 +1,5 @@
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { Box, IconButton, styled } from "@mui/material";
-import { SelectDomain } from "../select-domain";
-import type { Domain } from "../../models/domain";
 
 export interface HeaderLink {
   label: string;
@@ -13,7 +11,7 @@ interface HeaderProps {
   logo: string;
   links: HeaderLink[];
   buttons: React.ReactNode[];
-  domains?: Domain[];
+  children?: React.ReactNode;
 }
 
 const StyledNavLink = styled(NavLink)({
@@ -32,7 +30,7 @@ const StyledNavLink = styled(NavLink)({
   },
 });
 
-export const Header = ({ logo, links, buttons, domains }: HeaderProps) => {
+export const Header = ({ logo, links, buttons, children }: HeaderProps) => {
   const location = useLocation();
 
   return (
@@ -89,9 +87,9 @@ export const Header = ({ logo, links, buttons, domains }: HeaderProps) => {
             gap: "8px",
           }}
         >
-          {domains !== undefined && domains.length > 0 && (
+          {children !== undefined && (
             <>
-              <SelectDomain domains={domains} />
+              {children}
               <Box
                 sx={{
                   width: "2px",
