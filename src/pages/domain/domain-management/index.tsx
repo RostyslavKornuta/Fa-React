@@ -3,13 +3,15 @@ import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import { getSelectedDomain } from "../../../shared/lib/select-domain";
 import { PageTabs } from "../../../shared/lib/page-tabs";
 import { PageTab } from "../../../shared/lib/page-tabs/page-tab";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 
 export const DomainManagement = () => {
+  const navigate = useNavigate();
+
   const selectedDomain = getSelectedDomain();
 
   return (
-    <Box>
+    <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
       <Box
         sx={{
           padding: "16px 24px",
@@ -18,7 +20,7 @@ export const DomainManagement = () => {
           gap: "24px",
         }}
       >
-        <IconButton>
+        <IconButton onClick={() => navigate(`/content/${selectedDomain!.id}`)}>
           <KeyboardArrowLeftIcon />
         </IconButton>
         <Typography
@@ -41,7 +43,7 @@ export const DomainManagement = () => {
         <PageTab title="Tags" />
         <PageTab title="Infrastructure" />
       </PageTabs>
-      <Box sx={{ padding: "24px" }}>
+      <Box sx={{ padding: "24px", flex: 1 }}>
         <Outlet />
       </Box>
     </Box>

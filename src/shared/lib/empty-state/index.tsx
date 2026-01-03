@@ -1,7 +1,20 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import type { ReactNode } from "react";
 
-export const EmptyState = () => {
+interface EmptyStateProps {
+  title?: string;
+  description?: string;
+  icon?: ReactNode;
+  action?: ReactNode;
+}
+
+export const EmptyState = ({
+  title = "No Results",
+  description = "Looks like there are no entries here. Adjust your filters or try searching something else.",
+  icon = <SearchIcon color="primary" sx={{ width: "32px", height: "32px" }} />,
+  action,
+}: EmptyStateProps) => {
   return (
     <Box
       sx={{
@@ -22,7 +35,7 @@ export const EmptyState = () => {
           borderRadius: "100%",
         }}
       >
-        <SearchIcon color="primary" sx={{ width: "32px", height: "32px" }} />
+        {icon}
       </Box>
       <Box
         sx={{
@@ -42,7 +55,7 @@ export const EmptyState = () => {
             textAlign: "center",
           }}
         >
-          No Results
+          {title}
         </Typography>
         <Typography
           sx={{
@@ -52,10 +65,10 @@ export const EmptyState = () => {
             textAlign: "center",
           }}
         >
-          Looks like there are no entries here. Adjust your filters or try
-          searching something else.
+          {description}
         </Typography>
       </Box>
+      {action ?? action}
     </Box>
   );
 };

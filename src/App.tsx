@@ -23,6 +23,8 @@ import { DomainManagementTags } from "./pages/domain/domain-management/tags";
 import { DomainManagementCategories } from "./pages/domain/domain-management/categories";
 import { DomainManagementAuthors } from "./pages/domain/domain-management/authors";
 import { DomainManagementLayouts } from "./pages/domain/domain-management/layouts";
+import { PluginManagementEdit } from "./pages/domain/domain-management/plugins/plugin-management/edit";
+import { PluginManagementCreate } from "./pages/domain/domain-management/plugins/plugin-management/create";
 
 export const links: HeaderLink[] = [
   { label: "Content", to: "/", activePath: "content" },
@@ -80,6 +82,11 @@ export const App = () => {
                 element={<DomainManagementInfrastructure />}
               />
             </Route>
+            <Route
+              path="plugins/:pluginId"
+              element={<PluginManagementEdit />}
+            />
+            <Route path="plugins/create" element={<PluginManagementCreate />} />
             <Route path="article/:articleId" element={<ArticleManagement />} />
           </Route>
         </Routes>

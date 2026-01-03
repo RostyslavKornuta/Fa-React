@@ -2,6 +2,13 @@ import { createTheme } from "@mui/material";
 
 export const theme = createTheme({
   components: {
+    MuiTypography: {
+      styleOverrides: {
+        root: {
+          fontFamily: "Ubuntu, sans-serif",
+        },
+      },
+    },
     MuiPaper: {
       styleOverrides: {
         root: {

@@ -26,6 +26,8 @@ const StyledLink = styled(NavLink)({
   "&.active::after": {
     backgroundColor: "#6FB295",
   },
+
+  "&.active": { color: "#6FB295" },
 });
 
 interface PageTabProps {

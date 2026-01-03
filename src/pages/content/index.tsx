@@ -15,30 +15,26 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import AddIcon from "@mui/icons-material/Add";
-
 import { useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import { skipToken } from "@reduxjs/toolkit/query";
-
 import { CustomTable, type CustomTableColumn } from "../../shared/lib/table";
 import { CustomTableStatusCell } from "../../shared/lib/table/cells/status-cell";
 import { CustomTableTextCell } from "../../shared/lib/table/cells/text-cell";
 import { CustomTableDateCell } from "../../shared/lib/table/cells/date-cell";
 import { Loader } from "../../shared/ui/loader";
 import { Search } from "../../shared/lib/search";
-
 import type { ContentArticle } from "../../shared/models/content";
 import type { Author } from "../../shared/models/author";
 import type { Category } from "../../shared/models/category";
-
 import { useAppSelector } from "../../hooks/hooks";
 import { useDebounce } from "../../hooks/useDebounce";
-
 import { useGetContentQuery } from "../../shared/api/content/contentApi";
 import { useGetAuthorsQuery } from "../../shared/api/authors/authorsApi";
 import { useGetCategoriesQuery } from "../../shared/api/categories/categoriesApi";
-import { defaultContentSize } from "../../shared/api/constants";
+import { defaultContentSize, maxSize } from "../../shared/constants";
 import { getSelectedDomain } from "../../shared/lib/select-domain";
+import { capitalize } from "../../shared/utils";
 
 export const Content = () => {
   const navigate = useNavigate();
@@ -59,11 +55,27 @@ export const Content = () => {
   const [content, setContent] = useState<ContentArticle[]>([]);
 
   const { data: authors } = useGetAuthorsQuery(
-    shouldSkip ? skipToken : { ...searchRequest, domainId: selectedDomain.id }
+    shouldSkip
+      ? skipToken
+      : {
+          ...searchRequest,
+          domainId: selectedDomain.id,
+          order: "name",
+          size: maxSize,
+          sort: ["name", "desc"],
+        }
   );
 
   const { data: categories } = useGetCategoriesQuery(
-    shouldSkip ? skipToken : { ...searchRequest, domainId: selectedDomain.id }
+    shouldSkip
+      ? skipToken
+      : {
+          ...searchRequest,
+          domainId: selectedDomain.id,
+          order: "name",
+          size: maxSize,
+          sort: ["name", "desc"],
+        }
   );
 
   const { data: articles, isFetching: isContentFetching } = useGetContentQuery(
@@ -88,12 +100,6 @@ export const Content = () => {
 
   const getAuthorById = (authorId: string) =>
     authors?.find((a: Author) => a.id === authorId)?.name;
-
-  const transformAuthorName = (name: string) =>
-    name
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(" ");
 
   const onSettingsClick = () => navigate("edit");
 
@@ -202,7 +208,7 @@ export const Content = () => {
         render: (row) => (
           <CustomTableTextCell
             value={getAuthorById(row.author) ?? "—"}
-            refactor={transformAuthorName}
+            refactor={capitalize}
           />
         ),
       },
